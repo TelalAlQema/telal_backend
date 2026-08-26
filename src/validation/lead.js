@@ -1,16 +1,8 @@
 import { z } from "zod";
 
-// Hidden honeypot input on the forms. Bots that autofill it are dropped
-// silently (the request still answers 200 so bots learn nothing).
 export const HONEYPOT_FIELD = "website";
 export const RECAPTCHA_FIELD = "g-recaptcha-response";
 
-// Mirrors legacy sendmailcontact.php validation rules:
-//  - name: letters + spaces only, 2-100 chars
-//  - email: valid address, no CR/LF (header-injection guard)
-//  - phone: 7-15 digits only
-//  - services: required catalog selection
-//  - message: <= 1000 chars, no <>{}, no links
 const LINK_PATTERN = /(https?:\/\/|www\.|<a\s|url=)/i;
 
 const nameSchema = z
@@ -56,9 +48,8 @@ const baseFields = {
   phone: phoneSchema,
   services: servicesSchema,
   [RECAPTCHA_FIELD]: recaptchaSchema,
-  // Accepted but only inspected (see lead.routes honeypot short-circuit).
   [HONEYPOT_FIELD]: z.string().optional(),
-} as const;
+};
 
 export const contactSchema = z.object({
   ...baseFields,
@@ -69,14 +60,8 @@ export const quoteSchema = z.object({
   ...baseFields,
 });
 
-export type ContactInput = z.infer<typeof contactSchema>;
-export type QuoteInput = z.infer<typeof quoteSchema>;
-
-// Maps a zod error to a per-field message map (first issue wins per field).
-// Issue paths are e.g. ["email"] or ["message"]; root-level issues collapse to
-// a "form" key.
-export function zodFieldErrors(error: z.ZodError): { fields: Record<string, string> } {
-  const fields: Record<string, string> = {};
+export function zodFieldErrors(error) {
+  const fields = {};
   for (const issue of error.issues) {
     const key = issue.path.length > 0 ? issue.path.join(".") : "form";
     if (!(key in fields)) fields[key] = issue.message;

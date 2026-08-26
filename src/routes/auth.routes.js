@@ -10,7 +10,7 @@ export const authRouter = Router();
 const GENERIC_LOGIN_ERROR = "Invalid email or password.";
 
 authRouter.post("/login", async (req, res) => {
-  const body = req.body as Record<string, unknown>;
+  const body = req.body;
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
   const password = typeof body.password === "string" ? body.password : "";
 
@@ -20,8 +20,6 @@ authRouter.post("/login", async (req, res) => {
 
   const admin = await prisma.adminUser.findUnique({ where: { email } });
 
-  // Generic failure for unknown email and wrong password alike: never reveal
-  // whether an account exists (prevents admin-user enumeration).
   const ok =
     admin !== null &&
     (await bcrypt.compare(password, admin.password).catch(() => false));
@@ -32,9 +30,7 @@ authRouter.post("/login", async (req, res) => {
 
   await prisma.adminUser
     .update({ where: { id: admin.id }, data: { lastLoginAt: new Date() } })
-    .catch(() => {
-      // Non-fatal: a failed login-timestamp write must not break sign-in.
-    });
+    .catch(() => {});
 
   const token = await signAuthToken({ sub: String(admin.id), email: admin.email });
   res.cookie(AUTH_COOKIE_NAME, token, authCookieOptions());

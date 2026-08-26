@@ -3,28 +3,41 @@ import { prisma } from "../src/lib/prisma.js";
 
 const SALT_ROUNDS = 12;
 
-async function main(): Promise<void> {
+async function main() {
   const email = process.env.ADMIN_SEED_EMAIL;
   const password = process.env.ADMIN_SEED_PASSWORD;
 
   if (!email || !password) {
     throw new Error(
       "ADMIN_SEED_EMAIL and ADMIN_SEED_PASSWORD must be set in backend/.env " +
-        "(gitignored) to seed the admin user.",
+        "(gitignored) to seed the admin user."
     );
   }
 
-  const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+  const passwordHash = await bcrypt.hash(
+    password,
+    SALT_ROUNDS
+  );
 
-  // Idempotent: creates the admin on first run, does not clobber an existing
-  // password hash afterwards.
+  // Idempotent:
+  // Creates the admin on first run and does not
+  // overwrite an existing password hash.
   const admin = await prisma.adminUser.upsert({
-    where: { email },
+    where: {
+      email,
+    },
+
     update: {},
-    create: { email, passwordHash },
+
+    create: {
+      email,
+      passwordHash,
+    },
   });
 
-  console.log(`Admin seeded: ${admin.email} (id=${admin.id})`);
+  console.log(
+    `Admin seeded: ${admin.email} (id=${admin.id})`
+  );
 }
 
 main()

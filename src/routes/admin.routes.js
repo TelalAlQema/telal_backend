@@ -1,15 +1,13 @@
 import { Router } from "express";
 import { z } from "zod";
-import type { Prisma } from "../generated/prisma/client.js";
 import { SubmissionSource } from "../generated/prisma/enums.js";
 import { AppError } from "../lib/http-error.js";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth } from "../middleware/require-auth.js";
 import { zodFieldErrors } from "../validation/lead.js";
 
-const SOURCE_VALUES = Object.values(SubmissionSource) as [SubmissionSource, ...SubmissionSource[]];
+const SOURCE_VALUES = Object.values(SubmissionSource);
 
-// Query params drive a Prisma where/filter — never string-interpolated SQL.
 const listQuerySchema = z.object({
   source: z.enum(SOURCE_VALUES).optional(),
   page: z.coerce.number().int().min(1).default(1),
@@ -29,7 +27,7 @@ adminRouter.get("/submissions", async (req, res) => {
   }
 
   const { source, page, pageSize } = parsed.data;
-  const where: Prisma.SubmissionWhereInput = source !== undefined ? { source } : {};
+  const where = source !== undefined ? { source } : {};
 
   const [items, total] = await Promise.all([
     prisma.submission.findMany({
@@ -58,7 +56,7 @@ adminRouter.patch("/submissions/:id/read", async (req, res) => {
     throw new AppError(400, "validation_error", "Invalid submission id.");
   }
 
-  const body = (req.body ?? {}) as Record<string, unknown>;
+  const body = (req.body ?? {});
   const read = typeof body.read === "boolean" ? body.read : true;
 
   const existing = await prisma.submission.findUnique({ where: { id: id.data } });
