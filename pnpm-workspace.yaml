@@ -1,4 +1,8 @@
-allowBuilds:
-  '@prisma/engines': false
-  esbuild: false
-  prisma: false
+onlyBuiltDependencies:
+  - '@prisma/engines'
+  - '@prisma/client'
+  - esbuild
+  - prisma
+
+overrides:
+  deepmerge-ts: 8.0.0
