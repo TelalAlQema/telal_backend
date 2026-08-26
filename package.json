@@ -13,7 +13,8 @@
     "test": "node --experimental-test-module-mocks --import tsx --test \"tests/*.test.ts\"",
     "seed": "prisma db seed",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev"
+    "db:migrate": "prisma migrate dev",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/adapter-mariadb": "^7.9.1",
