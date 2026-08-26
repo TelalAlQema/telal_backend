@@ -9,15 +9,14 @@
     "build": "prisma generate",
     "start": "node src/index.js",
     "lint": "eslint .",
-    "test": "node --test \"tests/*.test.js\"",
-    "seed": "prisma db seed",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
+    "seed": "prisma db seed",
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/adapter-mariadb": "^7.9.1",
-    "@prisma/client": "^7.9.1",
+    "@prisma/adapter-mariadb": "^7.10.0",
+    "@prisma/client": "^7.10.0",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -32,6 +31,6 @@
     "@eslint/js": "^10.0.1",
     "eslint": "^10.8.0",
     "globals": "^16.3.0",
-    "prisma": "^7.9.1"
+    "prisma": "^7.10.0"
   }
 }

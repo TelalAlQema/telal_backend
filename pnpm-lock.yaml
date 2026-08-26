@@ -12,10 +12,10 @@ importers:
   .:
     dependencies:
       '@prisma/adapter-mariadb':
-        specifier: ^7.9.1
+        specifier: ^7.10.0
         version: 7.10.0
       '@prisma/client':
-        specifier: ^7.9.1
+        specifier: ^7.10.0
         version: 7.10.0(prisma@7.10.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.9.3))(typescript@5.9.3)
       bcryptjs:
         specifier: ^3.0.3
@@ -55,7 +55,7 @@ importers:
         specifier: ^16.3.0
         version: 16.5.0
       prisma:
-        specifier: ^7.9.1
+        specifier: ^7.10.0
         version: 7.10.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.9.3)
 
 packages:
