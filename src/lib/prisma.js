@@ -14,7 +14,7 @@
 
 
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
-import { PrismaClient } from "../generated/prisma/client.js";
+import { PrismaClient } from "../generated/prisma/index.js";
 import { getEnv } from "../config.js";
 
 const env = getEnv();

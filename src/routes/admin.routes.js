@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { SubmissionSource } from "../generated/prisma/enums.js";
+import { SubmissionSource } from "../generated/prisma/index.js";
 import { AppError } from "../lib/http-error.js";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth } from "../middleware/require-auth.js";
