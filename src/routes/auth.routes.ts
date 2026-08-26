@@ -24,7 +24,7 @@ authRouter.post("/login", async (req, res) => {
   // whether an account exists (prevents admin-user enumeration).
   const ok =
     admin !== null &&
-    (await bcrypt.compare(password, admin.passwordHash).catch(() => false));
+    (await bcrypt.compare(password, admin.password).catch(() => false));
 
   if (!ok || admin === null) {
     throw new AppError(401, "invalid_credentials", GENERIC_LOGIN_ERROR);

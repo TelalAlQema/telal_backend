@@ -467,16 +467,8 @@ export type EnumSubmissionSourceFieldUpdateOperationsInput = {
   set?: $Enums.SubmissionSource
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
 }
 
 

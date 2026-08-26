@@ -54,7 +54,8 @@ export const ModelName = {
   contactcontact: 'contactcontact',
   freequote: 'freequote',
   indexcontact: 'indexcontact',
-  login: 'login',
+  Login: 'Login',
+  AdminUser: 'AdminUser',
   Submission: 'Submission'
 } as const
 
@@ -124,6 +125,19 @@ export const LoginScalarFieldEnum = {
 export type LoginScalarFieldEnum = (typeof LoginScalarFieldEnum)[keyof typeof LoginScalarFieldEnum]
 
 
+export const AdminUserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  password: 'password',
+  name: 'name',
+  lastLoginAt: 'lastLoginAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminUserScalarFieldEnum = (typeof AdminUserScalarFieldEnum)[keyof typeof AdminUserScalarFieldEnum]
+
+
 export const SubmissionScalarFieldEnum = {
   id: 'id',
   source: 'source',
@@ -186,12 +200,12 @@ export const indexcontactOrderByRelevanceFieldEnum = {
 export type indexcontactOrderByRelevanceFieldEnum = (typeof indexcontactOrderByRelevanceFieldEnum)[keyof typeof indexcontactOrderByRelevanceFieldEnum]
 
 
-export const loginOrderByRelevanceFieldEnum = {
+export const LoginOrderByRelevanceFieldEnum = {
   email: 'email',
   password: 'password'
 } as const
 
-export type loginOrderByRelevanceFieldEnum = (typeof loginOrderByRelevanceFieldEnum)[keyof typeof loginOrderByRelevanceFieldEnum]
+export type LoginOrderByRelevanceFieldEnum = (typeof LoginOrderByRelevanceFieldEnum)[keyof typeof LoginOrderByRelevanceFieldEnum]
 
 
 export const NullsOrder = {
@@ -200,6 +214,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const AdminUserOrderByRelevanceFieldEnum = {
+  email: 'email',
+  password: 'password',
+  name: 'name'
+} as const
+
+export type AdminUserOrderByRelevanceFieldEnum = (typeof AdminUserOrderByRelevanceFieldEnum)[keyof typeof AdminUserOrderByRelevanceFieldEnum]
 
 
 export const SubmissionOrderByRelevanceFieldEnum = {

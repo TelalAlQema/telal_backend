@@ -57,10 +57,15 @@ export type freequote = Prisma.freequoteModel
  */
 export type indexcontact = Prisma.indexcontactModel
 /**
- * Model login
+ * Model Login
  * 
  */
-export type login = Prisma.loginModel
+export type Login = Prisma.LoginModel
+/**
+ * Model AdminUser
+ * 
+ */
+export type AdminUser = Prisma.AdminUserModel
 /**
  * Model Submission
  * 

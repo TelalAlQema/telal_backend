@@ -11,6 +11,7 @@
 export type * from './models/contactcontact.js'
 export type * from './models/freequote.js'
 export type * from './models/indexcontact.js'
-export type * from './models/login.js'
+export type * from './models/Login.js'
+export type * from './models/AdminUser.js'
 export type * from './models/Submission.js'
 export type * from './commonInputTypes.js'

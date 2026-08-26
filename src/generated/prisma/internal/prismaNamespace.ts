@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.9.1
- * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
+ * Prisma Client JS version: 7.10.0
+ * Query Engine version: 0edf323efd1d98336f3f0a68684b56f689b900d3
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.9.1",
-  engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
+  client: "7.10.0",
+  engine: "0edf323efd1d98336f3f0a68684b56f689b900d3"
 }
 
 /**
@@ -400,7 +400,8 @@ export const ModelName = {
   contactcontact: 'contactcontact',
   freequote: 'freequote',
   indexcontact: 'indexcontact',
-  login: 'login',
+  Login: 'Login',
+  AdminUser: 'AdminUser',
   Submission: 'Submission'
 } as const
 
@@ -417,7 +418,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "contactcontact" | "freequote" | "indexcontact" | "login" | "submission"
+    modelProps: "contactcontact" | "freequote" | "indexcontact" | "login" | "adminUser" | "submission"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -619,69 +620,135 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    login: {
-      payload: Prisma.$loginPayload<ExtArgs>
-      fields: Prisma.loginFieldRefs
+    Login: {
+      payload: Prisma.$LoginPayload<ExtArgs>
+      fields: Prisma.LoginFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.loginFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$loginPayload> | null
+          args: Prisma.LoginFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.loginFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$loginPayload>
+          args: Prisma.LoginFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginPayload>
         }
         findFirst: {
-          args: Prisma.loginFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$loginPayload> | null
+          args: Prisma.LoginFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.loginFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$loginPayload>
+          args: Prisma.LoginFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginPayload>
         }
         findMany: {
-          args: Prisma.loginFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$loginPayload>[]
+          args: Prisma.LoginFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginPayload>[]
         }
         create: {
-          args: Prisma.loginCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$loginPayload>
+          args: Prisma.LoginCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginPayload>
         }
         createMany: {
-          args: Prisma.loginCreateManyArgs<ExtArgs>
+          args: Prisma.LoginCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         delete: {
-          args: Prisma.loginDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$loginPayload>
+          args: Prisma.LoginDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginPayload>
         }
         update: {
-          args: Prisma.loginUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$loginPayload>
+          args: Prisma.LoginUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginPayload>
         }
         deleteMany: {
-          args: Prisma.loginDeleteManyArgs<ExtArgs>
+          args: Prisma.LoginDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.loginUpdateManyArgs<ExtArgs>
+          args: Prisma.LoginUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         upsert: {
-          args: Prisma.loginUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$loginPayload>
+          args: Prisma.LoginUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginPayload>
         }
         aggregate: {
           args: Prisma.LoginAggregateArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AggregateLogin>
         }
         groupBy: {
-          args: Prisma.loginGroupByArgs<ExtArgs>
+          args: Prisma.LoginGroupByArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.LoginGroupByOutputType>[]
         }
         count: {
-          args: Prisma.loginCountArgs<ExtArgs>
+          args: Prisma.LoginCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.LoginCountAggregateOutputType> | number
+        }
+      }
+    }
+    AdminUser: {
+      payload: Prisma.$AdminUserPayload<ExtArgs>
+      fields: Prisma.AdminUserFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdminUserFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdminUserFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        findFirst: {
+          args: Prisma.AdminUserFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdminUserFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        findMany: {
+          args: Prisma.AdminUserFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>[]
+        }
+        create: {
+          args: Prisma.AdminUserCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        createMany: {
+          args: Prisma.AdminUserCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.AdminUserDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        update: {
+          args: Prisma.AdminUserUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        deleteMany: {
+          args: Prisma.AdminUserDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdminUserUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.AdminUserUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        aggregate: {
+          args: Prisma.AdminUserAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdminUser>
+        }
+        groupBy: {
+          args: Prisma.AdminUserGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminUserGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdminUserCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminUserCountAggregateOutputType> | number
         }
       }
     }
@@ -840,6 +907,19 @@ export const LoginScalarFieldEnum = {
 export type LoginScalarFieldEnum = (typeof LoginScalarFieldEnum)[keyof typeof LoginScalarFieldEnum]
 
 
+export const AdminUserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  password: 'password',
+  name: 'name',
+  lastLoginAt: 'lastLoginAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminUserScalarFieldEnum = (typeof AdminUserScalarFieldEnum)[keyof typeof AdminUserScalarFieldEnum]
+
+
 export const SubmissionScalarFieldEnum = {
   id: 'id',
   source: 'source',
@@ -902,12 +982,12 @@ export const indexcontactOrderByRelevanceFieldEnum = {
 export type indexcontactOrderByRelevanceFieldEnum = (typeof indexcontactOrderByRelevanceFieldEnum)[keyof typeof indexcontactOrderByRelevanceFieldEnum]
 
 
-export const loginOrderByRelevanceFieldEnum = {
+export const LoginOrderByRelevanceFieldEnum = {
   email: 'email',
   password: 'password'
 } as const
 
-export type loginOrderByRelevanceFieldEnum = (typeof loginOrderByRelevanceFieldEnum)[keyof typeof loginOrderByRelevanceFieldEnum]
+export type LoginOrderByRelevanceFieldEnum = (typeof LoginOrderByRelevanceFieldEnum)[keyof typeof LoginOrderByRelevanceFieldEnum]
 
 
 export const NullsOrder = {
@@ -916,6 +996,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const AdminUserOrderByRelevanceFieldEnum = {
+  email: 'email',
+  password: 'password',
+  name: 'name'
+} as const
+
+export type AdminUserOrderByRelevanceFieldEnum = (typeof AdminUserOrderByRelevanceFieldEnum)[keyof typeof AdminUserOrderByRelevanceFieldEnum]
 
 
 export const SubmissionOrderByRelevanceFieldEnum = {
@@ -951,6 +1040,13 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
 
 
 /**
+ * Reference to a field of type 'DateTime'
+ */
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
  * Reference to a field of type 'SubmissionSource'
  */
 export type EnumSubmissionSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubmissionSource'>
@@ -961,13 +1057,6 @@ export type EnumSubmissionSourceFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-/**
- * Reference to a field of type 'DateTime'
- */
-export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
     
 
 
@@ -1131,7 +1220,8 @@ export type GlobalOmitConfig = {
   contactcontact?: Prisma.contactcontactOmit
   freequote?: Prisma.freequoteOmit
   indexcontact?: Prisma.indexcontactOmit
-  login?: Prisma.loginOmit
+  login?: Prisma.LoginOmit
+  adminUser?: Prisma.AdminUserOmit
   submission?: Prisma.SubmissionOmit
 }
 
