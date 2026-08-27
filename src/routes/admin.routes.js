@@ -8,6 +8,7 @@ import { zodFieldErrors } from "../validation/lead.js";
 
 const SOURCE_VALUES = Object.values(SubmissionSource);
 
+
 const listQuerySchema = z.object({
   source: z.enum(SOURCE_VALUES).optional(),
   page: z.coerce.number().int().min(1).default(1),
