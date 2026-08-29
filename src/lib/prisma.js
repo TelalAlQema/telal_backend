@@ -13,6 +13,7 @@ const adapter = new PrismaMariaDb({
   password: decodeURIComponent(databaseUrl.password),
   database: databaseUrl.pathname.replace(/^\//, ""),
   connectionLimit: 5,
+  allowPublicKeyRetrieval: true,
 });
 
 const globalForPrisma = globalThis;
