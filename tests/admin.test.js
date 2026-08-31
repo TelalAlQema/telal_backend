@@ -1,6 +1,4 @@
 import assert from "node:assert/strict";
-import type { Server } from "node:http";
-import type { AddressInfo } from "node:net";
 import { after, before, mock, test } from "node:test";
 import bcrypt from "bcryptjs";
 
@@ -20,25 +18,7 @@ const adminRecord = {
   lastLoginAt: null,
 };
 
-interface StoredSubmission {
-  id: number;
-  source: string;
-  name: string;
-  email: string;
-  phone: string;
-  services: string;
-  message: string | null;
-  ip: string | null;
-  read: boolean;
-  createdAt: Date;
-}
-
-function submission(
-  id: number,
-  source: string,
-  createdAt: Date,
-  overrides: Partial<StoredSubmission> = {},
-): StoredSubmission {
+function submission(id, source, createdAt, overrides = {}) {
   return {
     id,
     source,
@@ -54,7 +34,7 @@ function submission(
   };
 }
 
-const submissions = new Map<number, StoredSubmission>([
+const submissions = new Map([
   [1, submission(1, "QUOTE", new Date("2026-08-01T10:00:00Z"))],
   [2, submission(2, "CONTACT", new Date("2026-08-02T10:00:00Z"), { read: true })],
   [3, submission(3, "QUOTE", new Date("2026-08-03T10:00:00Z"))],
@@ -63,7 +43,7 @@ const submissions = new Map<number, StoredSubmission>([
 
 const fakePrisma = {
   adminUser: {
-    findUnique: async ({ where }: { where: { email: string } }) =>
+    findUnique: async ({ where }) =>
       where.email === adminRecord.email ? adminRecord : null,
     update: async () => adminRecord,
   },
@@ -72,27 +52,20 @@ const fakePrisma = {
       where = {},
       skip = 0,
       take = 20,
-    }: {
-      where?: { source?: string };
-      skip?: number;
-      take?: number;
-    }) => {
+    } = {}) => {
       const matching = Array.from(submissions.values())
         .filter((item) => where.source === undefined || item.source === where.source)
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
       return matching.slice(skip, skip + take);
     },
-    count: async ({ where = {} }: { where?: { source?: string } }) =>
+    count: async ({ where = {} } = {}) =>
       Array.from(submissions.values()).filter(
         (item) => where.source === undefined || item.source === where.source,
       ).length,
-    findUnique: async ({ where }: { where: { id: number } }) => submissions.get(where.id) ?? null,
+    findUnique: async ({ where }) => submissions.get(where.id) ?? null,
     update: async ({
       where,
       data,
-    }: {
-      where: { id: number };
-      data: { read: boolean };
     }) => {
       const existing = submissions.get(where.id);
       if (existing === undefined) throw new Error("record not found");
@@ -100,7 +73,7 @@ const fakePrisma = {
       submissions.set(where.id, updated);
       return updated;
     },
-    delete: async ({ where }: { where: { id: number } }) => {
+    delete: async ({ where }) => {
       const existing = submissions.get(where.id);
       if (existing === undefined) throw new Error("record not found");
       submissions.delete(where.id);
@@ -112,10 +85,10 @@ mock.module("../src/lib/prisma.js", { namedExports: { prisma: fakePrisma } });
 
 const { createApp } = await import("../src/app.js");
 
-let server: Server;
-let baseUrl: string;
+let server;
+let baseUrl;
 
-async function request(path: string, init: RequestInit = {}): Promise<Response> {
+async function request(path, init = {}) {
   return fetch(`${baseUrl}${path}`, {
     ...init,
     headers: {
@@ -125,7 +98,7 @@ async function request(path: string, init: RequestInit = {}): Promise<Response> 
   });
 }
 
-async function login(): Promise<string> {
+async function login() {
   const res = await request("/api/v1/auth/login", {
     method: "POST",
     body: JSON.stringify({ email: ADMIN_EMAIL, password: ADMIN_PASSWORD }),
@@ -139,14 +112,14 @@ async function login(): Promise<string> {
 
 before(async () => {
   server = createApp().listen(0, "127.0.0.1");
-  await new Promise<void>((resolve) => server.once("listening", resolve));
-  const { port } = server.address() as AddressInfo;
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
   baseUrl = `http://127.0.0.1:${port}`;
 });
 
 after(async () => {
   mock.reset();
-  await new Promise<void>((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     server.close((err) => (err ? reject(err) : resolve()));
   });
 });
@@ -154,7 +127,7 @@ after(async () => {
 test("GET /api/v1/submissions without a token returns 401", async () => {
   const res = await request("/api/v1/submissions");
   assert.equal(res.status, 401);
-  assert.equal((await res.json() as { code: string }).code, "unauthorized");
+  assert.equal((await res.json()).code, "unauthorized");
 });
 
 test("PATCH and DELETE without a token return 401", async () => {
@@ -169,16 +142,13 @@ test("GET /api/v1/submissions returns items ordered newest-first with pagination
   const res = await request("/api/v1/submissions?page=1&pageSize=2", { headers: { cookie } });
 
   assert.equal(res.status, 200);
-  const body = (await res.json()) as {
-    items: Array<{ id: number; source: string }>;
-    pagination: { page: number; pageSize: number; total: number; totalPages: number };
-  };
+  const body = await res.json();
 
   assert.deepEqual(body.pagination, { page: 1, pageSize: 2, total: 4, totalPages: 2 });
   assert.deepEqual(body.items.map((item) => item.id), [4, 3]);
 
   const pageTwo = await request("/api/v1/submissions?page=2&pageSize=2", { headers: { cookie } });
-  const pageTwoBody = (await pageTwo.json()) as { items: Array<{ id: number }> };
+  const pageTwoBody = await pageTwo.json();
   assert.deepEqual(pageTwoBody.items.map((item) => item.id), [2, 1]);
 });
 
@@ -187,10 +157,7 @@ test("GET /api/v1/submissions?source= filters to a single source", async () => {
   const res = await request("/api/v1/submissions?source=QUOTE", { headers: { cookie } });
 
   assert.equal(res.status, 200);
-  const body = (await res.json()) as {
-    items: Array<{ id: number; source: string }>;
-    pagination: { total: number };
-  };
+  const body = await res.json();
   assert.equal(body.pagination.total, 2);
   assert.ok(body.items.every((item) => item.source === "QUOTE"));
 });
@@ -199,7 +166,7 @@ test("GET /api/v1/submissions with an invalid source returns 400", async () => {
   const cookie = await login();
   const res = await request("/api/v1/submissions?source=NOPE", { headers: { cookie } });
   assert.equal(res.status, 400);
-  assert.equal((await res.json() as { code: string }).code, "validation_error");
+  assert.equal((await res.json()).code, "validation_error");
 });
 
 test("PATCH /api/v1/submissions/:id/read marks the lead as read", async () => {
@@ -211,7 +178,7 @@ test("PATCH /api/v1/submissions/:id/read marks the lead as read", async () => {
   });
 
   assert.equal(res.status, 200);
-  const body = (await res.json()) as { id: number; read: boolean };
+  const body = await res.json();
   assert.equal(body.id, 1);
   assert.equal(body.read, true);
   assert.equal(submissions.get(1)?.read, true);
@@ -226,7 +193,7 @@ test("PATCH /api/v1/submissions/:id/read with read=false unmarks", async () => {
   });
 
   assert.equal(res.status, 200);
-  const body = (await res.json()) as { read: boolean };
+  const body = await res.json();
   assert.equal(body.read, false);
   assert.equal(submissions.get(2)?.read, false);
 });
@@ -239,7 +206,7 @@ test("PATCH /api/v1/submissions/:id/read on a missing id returns 404", async () 
     body: "{}",
   });
   assert.equal(res.status, 404);
-  assert.equal((await res.json() as { code: string }).code, "not_found");
+  assert.equal((await res.json()).code, "not_found");
 });
 
 test("DELETE /api/v1/submissions/:id returns 204 and removes the record", async () => {
@@ -254,7 +221,7 @@ test("DELETE /api/v1/submissions/:id on a missing id returns 404", async () => {
   const cookie = await login();
   const res = await request("/api/v1/submissions/999", { method: "DELETE", headers: { cookie } });
   assert.equal(res.status, 404);
-  assert.equal((await res.json() as { code: string }).code, "not_found");
+  assert.equal((await res.json()).code, "not_found");
 });
 
 test("PATCH /api/v1/submissions/abc/read returns 400", async () => {
@@ -265,5 +232,5 @@ test("PATCH /api/v1/submissions/abc/read returns 400", async () => {
     body: "{}",
   });
   assert.equal(res.status, 400);
-  assert.equal((await res.json() as { code: string }).code, "validation_error");
+  assert.equal((await res.json()).code, "validation_error");
 });

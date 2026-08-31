@@ -1,6 +1,4 @@
 import assert from "node:assert/strict";
-import type { Server } from "node:http";
-import type { AddressInfo } from "node:net";
 import { after, before, mock, test } from "node:test";
 import bcrypt from "bcryptjs";
 
@@ -25,7 +23,7 @@ const adminRecord = {
 // app (and its routes) import it. Requires --experimental-test-module-mocks.
 const fakePrisma = {
   adminUser: {
-    findUnique: async ({ where }: { where: { email: string } }) =>
+    findUnique: async ({ where }) =>
       where.email === adminRecord.email ? adminRecord : null,
     update: async () => adminRecord,
   },
@@ -34,10 +32,10 @@ mock.module("../src/lib/prisma.js", { namedExports: { prisma: fakePrisma } });
 
 const { createApp } = await import("../src/app.js");
 
-let server: Server;
-let baseUrl: string;
+let server;
+let baseUrl;
 
-async function request(path: string, init: RequestInit = {}): Promise<Response> {
+async function request(path, init = {}) {
   return fetch(`${baseUrl}${path}`, {
     ...init,
     headers: {
@@ -47,7 +45,7 @@ async function request(path: string, init: RequestInit = {}): Promise<Response> 
   });
 }
 
-function cookieFrom(res: Response): string {
+function cookieFrom(res) {
   const setCookie = res.headers.get("set-cookie") ?? "";
   const pair = setCookie.split(";")[0];
   assert.ok(pair, "expected a Set-Cookie header");
@@ -56,14 +54,14 @@ function cookieFrom(res: Response): string {
 
 before(async () => {
   server = createApp().listen(0, "127.0.0.1");
-  await new Promise<void>((resolve) => server.once("listening", resolve));
-  const { port } = server.address() as AddressInfo;
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
   baseUrl = `http://127.0.0.1:${port}`;
 });
 
 after(async () => {
   mock.reset();
-  await new Promise<void>((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     server.close((err) => (err ? reject(err) : resolve()));
   });
 });
@@ -74,7 +72,7 @@ test("POST /api/v1/auth/login with correct credentials returns 200 and an httpOn
     body: JSON.stringify({ email: ADMIN_EMAIL, password: ADMIN_PASSWORD }),
   });
   assert.equal(res.status, 200);
-  const body = (await res.json()) as { user: { id: number; email: string } };
+  const body = await res.json();
   assert.deepEqual(body.user, { id: adminRecord.id, email: ADMIN_EMAIL });
 
   const setCookie = res.headers.get("set-cookie") ?? "";
@@ -105,7 +103,7 @@ test("POST /api/v1/auth/login with a wrong password returns 401 with a generic m
     body: JSON.stringify({ email: ADMIN_EMAIL, password: "wrong-password" }),
   });
   assert.equal(res.status, 401);
-  const body = (await res.json()) as { code: string; message: string };
+  const body = await res.json();
   assert.equal(body.code, "invalid_credentials");
   assert.equal(body.message, "Invalid email or password.");
   assert.equal(res.headers.get("set-cookie"), null, "no cookie must be set on failure");
@@ -117,14 +115,14 @@ test("POST /api/v1/auth/login with an unknown email returns the same generic 401
     body: JSON.stringify({ email: "nobody@example.com", password: "whatever" }),
   });
   assert.equal(res.status, 401);
-  const body = (await res.json()) as { message: string };
+  const body = await res.json();
   assert.equal(body.message, "Invalid email or password.");
 });
 
 test("GET /api/v1/auth/me without a token returns 401", async () => {
   const res = await request("/api/v1/auth/me");
   assert.equal(res.status, 401);
-  assert.equal((await res.json() as { code: string }).code, "unauthorized");
+  assert.equal((await res.json()).code, "unauthorized");
 });
 
 test("GET /api/v1/auth/me with a tampered token returns 401", async () => {
@@ -146,7 +144,7 @@ test("POST /api/v1/auth/login with a missing password returns 400", async () => 
     body: JSON.stringify({ email: ADMIN_EMAIL }),
   });
   assert.equal(res.status, 400);
-  assert.equal((await res.json() as { code: string }).code, "validation_error");
+  assert.equal((await res.json()).code, "validation_error");
 });
 
 test("POST /api/v1/auth/logout clears the auth cookie", async () => {

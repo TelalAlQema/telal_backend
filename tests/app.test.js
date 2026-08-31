@@ -1,6 +1,4 @@
 import assert from "node:assert/strict";
-import type { Server } from "node:http";
-import type { AddressInfo } from "node:net";
 import { after, before, test } from "node:test";
 
 // Env must be present before the app module (which validates env on import) loads.
@@ -11,18 +9,18 @@ process.env.JWT_SECRET ??= "test-only-secret-with-at-least-32-characters!";
 
 const { createApp } = await import("../src/app.js");
 
-let server: Server;
-let baseUrl: string;
+let server;
+let baseUrl;
 
 before(async () => {
   server = createApp().listen(0, "127.0.0.1");
-  await new Promise<void>((resolve) => server.once("listening", resolve));
-  const { port } = server.address() as AddressInfo;
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
   baseUrl = `http://127.0.0.1:${port}`;
 });
 
 after(async () => {
-  await new Promise<void>((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     server.close((err) => (err ? reject(err) : resolve()));
   });
 });
@@ -47,7 +45,7 @@ test("malformed JSON body returns 400 invalid_json", async () => {
     body: "{not json",
   });
   assert.equal(res.status, 400);
-  const body = (await res.json()) as { code: string };
+  const body = await res.json();
   assert.equal(body.code, "invalid_json");
 });
 
