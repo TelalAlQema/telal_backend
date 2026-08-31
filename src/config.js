@@ -99,15 +99,17 @@ export class EnvError extends Error {
 let cached;
 
 export function loadEnv(path = ".env") {
-  try {
-    process.loadEnvFile(path);
-  } catch (err) {
-    if (err?.code !== "ENOENT") {
-      throw new EnvError(
-        `Failed to load environment file "${path}": ${
-          err instanceof Error ? err.message : String(err)
-        }`
-      );
+  if (typeof process.loadEnvFile === "function") {
+    try {
+      process.loadEnvFile(path);
+    } catch (err) {
+      if (err?.code !== "ENOENT") {
+        throw new EnvError(
+          `Failed to load environment file "${path}": ${
+            err instanceof Error ? err.message : String(err)
+          }`
+        );
+      }
     }
   }
 
